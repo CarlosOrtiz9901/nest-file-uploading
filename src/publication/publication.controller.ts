@@ -11,34 +11,38 @@ export class PublicationController {
   constructor(private readonly publicationService: PublicationService) { }
 
   @Post('file')
-  @UseInterceptors(
-    FileInterceptor('image', {
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadFile(@UploadedFile() file) {
+    console.log(file);
+  }
+
+  /*   @Post('file')
+  @UseInterceptors(FileInterceptor('image', {
       storage: multer.diskStorage({
         destination: './files',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
-    }),
-  )
+    }))
   async uploadedFile(@UploadedFile() file) {
     const response = {
       originalname: file.originalname,
       filename: file.filename,
     };
     return response;
-  }
+  } */
 
   @Post('multiple')
-  @UseInterceptors(
-    FilesInterceptor('image', 20, {
-      storage: multer.diskStorage({
-        destination: './files',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
+  @UseInterceptors(FilesInterceptor('image', 20, {
+    limits: { fileSize: 1000000 },
+    storage: multer.diskStorage({
+      destination: './src/files',
+      filename: editFileName,
     }),
-  )
+    fileFilter: imageFileFilter,
+  }))
   async uploadMultipleFiles(@UploadedFiles() files) {
+    console.log(files);
     const response = [];
     files.forEach(file => {
       const fileReponse = {
@@ -52,7 +56,7 @@ export class PublicationController {
 
   @Get(':imgpath')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
-    return res.sendFile(image, { root: './files' });
+    return res.sendFile(image, { root: './src/files' });
   }
 
 }
