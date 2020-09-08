@@ -12,4 +12,4 @@ import { MulterModule } from '@nestjs/platform-express';
   providers: [PublicationService],
 })
 
-export class PublicationModule {}
+export class PublicationModule { }
